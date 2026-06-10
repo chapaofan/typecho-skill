@@ -8,7 +8,7 @@ allowed-tools: Bash, Read, WebFetch
 
 这是一份**纯 HTTP 调用**说明。Agent 加载本 skill 后，只通过 `TYPECHO_API_BASE_URL`（远程 Typecho 服务器上的 typecho-agent-api 服务）+ `TYPECHO_API_KEY`（预共享密钥）调用 REST 接口，**不安装任何 Python 包、不读本机任何文件、不直接连数据库**。
 
-服务端是独立部署的 [typecho-agent-api](https://github.com/yourname/typecho-agent-api) —— 跑在用户的 Typecho 服务器上，直接读写 typecho_* MySQL 表 + 调腾讯云 COS。本 skill 与服务端代码完全解耦。
+服务端是独立部署的 [typecho-agent-api](https://github.com/chapaofan/typecho-server-and-skill) —— 跑在用户的 Typecho 服务器上，直接读写 typecho_* MySQL 表 + 调腾讯云 COS。本 skill 与服务端代码完全解耦。
 
 ## 何时使用
 
@@ -293,4 +293,4 @@ ok = requests.delete(f"{BASE}/v1/posts/{cid}", headers=H).json()
 └────────────────────┘                        └─────────────────────────────┘
 ```
 
-服务端代码与本 skill 完全独立 —— 服务端在 [typecho-agent-api 仓库](https://github.com/yourname/typecho-agent-api) 维护，本 skill 只是给 agent 用的"使用说明书"。
+服务端代码与本 skill 完全独立 —— 服务端在 [typecho-server-and-skill 仓库](https://github.com/chapaofan/typecho-server-and-skill) 维护，本 skill 只是给 agent 用的"使用说明书"。

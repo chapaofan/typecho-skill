@@ -95,8 +95,8 @@ vim .env      # 改 DB / COS / API_KEYS
 # 1) Typecho 数据库（从博客根目录的 config.inc.php 复制）
 TYPECHO_DB_HOST=localhost
 TYPECHO_DB_PORT=3306
-TYPECHO_DB_USER=xaomaozhou
-TYPECHO_DB_PASSWORD=wdy1998101012
+TYPECHO_DB_USER=user
+TYPECHO_DB_PASSWORD=password
 TYPECHO_DB_NAME=typecho
 TYPECHO_TABLE_PREFIX=typecho_
 
