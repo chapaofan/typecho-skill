@@ -81,11 +81,12 @@ def _set_categories(conn, cid: int, category_mids: Sequence[int], recount: bool 
     category_mids 是 mid 列表（int）。
     """
     category_mids = list({int(m) for m in category_mids if m})
+    metas_t = CONFIG.typecho.table("metas")
+    rels_t = CONFIG.typecho.table("relationships")
 
     # 已有的
     rows = select_all(conn, "metas",
-                      "table.metas.mid IN (SELECT mid FROM %s WHERE cid=%%s) AND table.metas.type='category'" %
-                      CONFIG.typecho.table("relationships"),
+                      f"{metas_t}.mid IN (SELECT mid FROM {rels_t} WHERE cid=%s) AND {metas_t}.type='category'",
                       (cid,))
     exist = {r["mid"] for r in rows}
 
@@ -115,11 +116,12 @@ def _set_tags(conn, cid: int, tag_names: Sequence[str], recount: bool = True) ->
     返回最终的 mid 列表。
     """
     tag_names = [t.strip() for t in tag_names if t and t.strip()]
+    metas_t = CONFIG.typecho.table("metas")
+    rels_t = CONFIG.typecho.table("relationships")
 
     # 已有的标签 mid
     rows = select_all(conn, "metas",
-                      "table.metas.mid IN (SELECT mid FROM %s WHERE cid=%%s) AND table.metas.type='tag'" %
-                      CONFIG.typecho.table("relationships"),
+                      f"{metas_t}.mid IN (SELECT mid FROM {rels_t} WHERE cid=%s) AND {metas_t}.type='tag'",
                       (cid,))
     exist = {r["mid"] for r in rows}
 
