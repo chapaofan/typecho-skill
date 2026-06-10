@@ -129,7 +129,7 @@ def upload_bytes(data: bytes, filename: str, content_type: Optional[str] = None,
         Key=final_key,
         Body=io.BytesIO(data),
         ContentType=ct,
-        ContentLength=len(data),
+        ContentLength=str(len(data)),
     )
     return {
         "key": final_key,

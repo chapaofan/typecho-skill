@@ -50,11 +50,11 @@ curl -fsS "$TYPECHO_API_BASE_URL/healthz"
 | 文章 | `DELETE /v1/posts/{cid}` | `cid` | 删除文章 + 清理关联 |
 | 文章 | `GET /v1/posts?page=1&page_size=20` | - | 分页列表，可选 `status` / `keyword` |
 | 文章 | `GET /v1/posts/by-slug/{slug}` | - | 按 URL 缩略名查找 |
-| 分类 | `GET /v1/tools/call` `{name:"list_categories"}` | - | 列出所有分类 |
-| 标签 | `GET /v1/tools/call` `{name:"list_tags"}` | - | 列出所有标签 |
-| 分类 | `GET /v1/tools/call` `{name:"create_category",arguments:{name:...}}` | `name` | 新建分类 |
-| 标签 | `GET /v1/tools/call` `{name:"create_tag",arguments:{name:...}}` | `name` | 新建标签 |
-| 元数据 | `GET /v1/tools/call` `{name:"delete_meta",arguments:{mid:N}}` | `mid` | 删除分类/标签（同时解绑所有文章） |
+| 分类 | `POST /v1/tools/call` `{name:"list_categories"}` | - | 列出所有分类 |
+| 标签 | `POST /v1/tools/call` `{name:"list_tags"}` | - | 列出所有标签 |
+| 分类 | `POST /v1/tools/call` `{name:"create_category",arguments:{name:...}}` | `name` | 新建分类 |
+| 标签 | `POST /v1/tools/call` `{name:"create_tag",arguments:{name:...}}` | `name` | 新建标签 |
+| 元数据 | `POST /v1/tools/call` `{name:"delete_meta",arguments:{mid:N}}` | `mid` | 删除分类/标签（同时解绑所有文章） |
 | 图片 | `POST /v1/images/upload_base64` | `base64_data` | 上传 base64 图片到 COS |
 | 图片 | `POST /v1/images/upload`（multipart） | `file` | 上传本地图片到 COS |
 | 图片 | `DELETE /v1/images/{key:path}` | - | 删除 COS 上的图片 |
