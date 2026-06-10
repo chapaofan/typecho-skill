@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "typecho-agent-api"
+version = "1.0.0"
+description = "为 LLM Agent 提供 Typecho 博客增删改文章 + 腾讯云 COS 图片上传能力（HTTP API + OpenAI function-calling 工具）"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Typecho Agent API" }]
+dependencies = [
+    "PyMySQL>=1.1.0",
+    "DBUtils>=3.1.0",
+    "python-dotenv>=1.0.0",
+    "cos-python-sdk-v5>=1.9.29",
+    "pydantic>=2.5.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+openai = ["openai>=1.0.0"]
+
+[project.scripts]
+typecho-server = "typecho_agent_api.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+typecho_agent_api = ["py.typed"]
