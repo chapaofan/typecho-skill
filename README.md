@@ -240,6 +240,39 @@ SKILL.md 包含：
 
 ---
 
+## 使用方式 5：宝塔面板部署
+
+宝塔"基础版"Python 项目管理器**没有 uvicorn 选项**（框架只给 django/Flask/Sanic/python，启动方式只给 uwsgi/gunicorn/python），所以走最稳的"python 启动 + 自带 run.py"路线。
+
+```bash
+# 1) 上传 / git pull 代码到宝塔项目路径（例：/www/wwwroot/typecho-server-and-skill）
+
+# 2) 宝塔"终端"里：装包（推荐 editable）
+cd /www/wwwroot/typecho-server-and-skill
+pip install -e .
+
+# 3) 准备 .env（项目根）
+cp .env.example .env
+vim .env     # 改 TYPECHO_DB_* / COS_* / API_KEYS
+
+# 4) 手动起一次确认
+python run.py
+# 应该看到：Uvicorn running on http://0.0.0.0:8000
+# Ctrl+C 退出
+
+# 5) 在宝塔面板"Python 项目"里：
+#    框架     = python
+#    启动方式 = python
+#    运行文件 = run.py
+#    端口     = .env 里的 HTTP_PORT（默认 8000）
+#    勾上"安装模块"或先在终端跑过 pip install -e .
+#    → 点"启动"
+```
+
+宝塔 supervisor 会托管进程；挂了自动拉起。生产环境**强烈建议**在宝塔"网站"里再加一层 Nginx 反代 + Let's Encrypt 证书，把 8000 端口映射到 443 + 域名，agent 那边设 `TYPECHO_API_BASE_URL=https://blog.example.com`。
+
+---
+
 ## 数据库结构对照
 
 代码里的字段定义与 Typecho 原生表完全一致：
