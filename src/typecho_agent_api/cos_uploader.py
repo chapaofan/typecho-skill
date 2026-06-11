@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import io
 import logging
 import os
@@ -89,7 +90,16 @@ def upload_file(local_path: str, key: Optional[str] = None) -> dict:
     """
     上传本地文件到 COS。
     返回 {"key": ..., "url": ..., "size": ..., "etag": ...}
+
+    ⚠️ 这个函数会让调用方读取服务端机器上的任意文件并上传到 COS。
+    生产环境必须把 .env 里 ALLOW_LOCAL_UPLOAD 设为 false。
+    任意 agent 调这个工具都相当于一次任意文件读取 + 外传 —— 哪怕只开 API Key 鉴权也不安全。
+    本地开发自己玩的时候再开 true。
     """
+    if not CONFIG.allow_local_upload:
+        raise PermissionError(
+            "upload_image_from_file is disabled. Set ALLOW_LOCAL_UPLOAD=true in .env to enable."
+        )
     if not os.path.isfile(local_path):
         raise FileNotFoundError(local_path)
     final_key = key or _build_key(os.path.basename(local_path))
@@ -151,7 +161,12 @@ def upload_base64(b64: str, filename: str = "image.png",
         if content_type is None and ";" in head:
             content_type = head[5:].split(";")[0]
     b64 = b64.strip()
-    data = base64.b64decode(b64)
+    if not b64:
+        raise ValueError("base64_data is empty")
+    try:
+        data = base64.b64decode(b64, validate=True)
+    except (binascii.Error, ValueError) as e:
+        raise ValueError(f"invalid base64: {e}") from e
     return upload_bytes(data, filename=filename, content_type=content_type, image_only=image_only)
 
 

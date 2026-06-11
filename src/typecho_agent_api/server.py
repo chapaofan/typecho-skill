@@ -113,11 +113,26 @@ def api_create_post():
 
 @app.route("/v1/posts", methods=["GET"])
 def api_list_posts():
+    def _int_arg(name: str, default: int) -> int:
+        raw = request.args.get(name)
+        if raw is None or raw == "":
+            return default
+        try:
+            return int(raw)
+        except ValueError:
+            raise ValueError(f"{name} must be an integer, got {raw!r}")
+
+    try:
+        page = _int_arg("page", 1)
+        page_size = _int_arg("page_size", 20)
+    except ValueError as e:
+        return jsonify({"ok": False, "error": str(e)}), 400
+
     return jsonify(list_posts(
         status=request.args.get("status"),
         keyword=request.args.get("keyword"),
-        page=int(request.args.get("page", 1)),
-        page_size=int(request.args.get("page_size", 20)),
+        page=page,
+        page_size=page_size,
     ))
 
 
@@ -190,8 +205,12 @@ def api_delete_image(key: str):
 # ============================================================
 @app.errorhandler(Exception)
 def _on_exception(e: Exception):
+    # 完整 traceback 写日志，HTTP 响应里不返内部细节（表名/路径/SQL）。
+    # 调试时（HTTP_DEBUG=true）才把异常原文返出来方便排查。
     logger.exception("unhandled error: %s %s", request.method, request.path)
-    return jsonify({"ok": False, "error": f"{type(e).__name__}: {e}"}), 500
+    if CONFIG.http_debug:
+        return jsonify({"ok": False, "error": f"{type(e).__name__}: {e}"}), 500
+    return jsonify({"ok": False, "error": "internal server error"}), 500
 
 
 def main() -> None:

@@ -68,6 +68,14 @@ def get_conn():
 
 
 # ---------- 通用查询工具 ----------
+#
+# ⚠️ update / delete / select_* 的 `where` 参数是**直接字符串拼接**进 SQL 的，
+# 不是参数化。**调用方必须传硬编码字符串**，绝对不要把用户输入拼进去。
+# 用户输入的值请走 where_args 走 `%s` 占位符。
+# 例如：  select_one(conn, "contents", "cid=%s", (cid,))   ← 安全
+#       select_one(conn, "contents", f"cid={cid}")           ← 注入！
+# 现有所有调用方都遵守了这个约定。
+# ---------- 通用查询工具 ----------
 
 def _format_in(seq: Sequence[Any]) -> str:
     return ",".join(["%s"] * len(seq))

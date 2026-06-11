@@ -66,6 +66,9 @@ class AppConfig:
     http_host: str = "0.0.0.0"
     http_port: int = 8000
     http_debug: bool = False
+    # 服务端是否允许 upload_image_from_file 从服务端文件系统读文件上传。
+    # 默认 false：产线应该用 upload_image_from_base64；本地开发时改为 true。
+    allow_local_upload: bool = False
     typecho: TypechoConfig = field(default_factory=TypechoConfig)
     cos: CosConfig = field(default_factory=CosConfig)
 
@@ -77,6 +80,7 @@ def load_config() -> AppConfig:
         http_host=_get("HTTP_HOST", "0.0.0.0"),
         http_port=_get_int("HTTP_PORT", 8000),
         http_debug=_get("HTTP_DEBUG", "false").lower() in ("1", "true", "yes"),
+        allow_local_upload=_get("ALLOW_LOCAL_UPLOAD", "false").lower() in ("1", "true", "yes"),
         typecho=TypechoConfig(
             host=_get("TYPECHO_DB_HOST", "localhost"),
             port=_get_int("TYPECHO_DB_PORT", 3306),
